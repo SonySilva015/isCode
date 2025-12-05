@@ -1,0 +1,306 @@
+// src/styles/profile.js
+import { Dimensions, StyleSheet } from 'react-native';
+import { colors } from './colors';
+
+const { width } = Dimensions.get('window');
+
+export const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F8FAFC',
+    },
+    gradientHeader: {
+        paddingTop: 20,
+        paddingBottom: 30,
+        borderBottomLeftRadius: 30,
+        borderBottomRightRadius: 30,
+    },
+    headerContent: {
+        alignItems: 'center',
+        paddingHorizontal: 20,
+    },
+    avatarContainer: {
+        position: 'relative',
+        marginBottom: 16,
+    },
+    avatar: {
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        borderWidth: 4,
+        borderColor: 'rgba(255, 255, 255, 0.3)',
+    },
+    uploadButton: {
+        position: 'absolute',
+        bottom: 5,
+        right: 5,
+        backgroundColor: colors.transBlack,
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        justifyContent: 'center',
+        alignItems: 'center',
+
+    },
+
+    levelText: {
+        color: '#FFD700',
+        fontSize: 12,
+        fontWeight: 'bold',
+        marginLeft: 4,
+    },
+    userName: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#fff',
+        marginBottom: 8,
+        textAlign: 'center',
+    },
+
+    userStats: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        padding: 16,
+        borderRadius: 20,
+        marginTop: 10,
+    },
+
+    userStatLabel: {
+        fontSize: 12,
+        color: 'rgba(255, 255, 255, 0.8)',
+        marginLeft: 4,
+    },
+    tabsContainer: {
+        flexDirection: 'row',
+        backgroundColor: '#fff',
+        marginHorizontal: 20,
+        marginTop: -20,
+        borderRadius: 15,
+        padding: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 12,
+        elevation: 5,
+    },
+    tab: {
+        flex: 1,
+        paddingVertical: 12,
+        alignItems: 'center',
+        borderRadius: 12,
+    },
+    tabActive: {
+        backgroundColor: '#6366F1',
+    },
+    tabText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#6B7280',
+    },
+    tabTextActive: {
+        color: '#fff',
+    },
+    tabContent: {
+        padding: 20,
+    },
+    sectionTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#1F2937',
+        marginBottom: 16,
+    },
+    infoCard: {
+        backgroundColor: '#fff',
+        borderRadius: 20,
+        padding: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 12,
+        elevation: 5,
+    },
+    infoItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#F3F4F6',
+    },
+    infoContent: {
+        marginLeft: 12,
+        flex: 1,
+    },
+    infoLabel: {
+        fontSize: 14,
+        color: '#6B7280',
+        marginBottom: 2,
+    },
+    infoValue: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#1F2937',
+    },
+    dadosgrid: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+    },
+    dadosCard: {
+        width: (width - 60) / 2,
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        padding: 16,
+        alignItems: 'center',
+        marginBottom: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 3,
+    },
+    dadosIcon: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 8,
+    },
+    dadosName: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#1F2937',
+        textAlign: 'center',
+        marginBottom: 4,
+    },
+    dadosStat: {
+        fontSize: 12,
+        color: '#6B7280',
+    },
+    statsGrid: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+    },
+    statCard: {
+        width: (width - 60) / 2,
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        padding: 16,
+        marginBottom: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 3,
+    },
+    statHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 8,
+    },
+    statLabel: {
+        fontSize: 14,
+        color: '#6B7280',
+        marginLeft: 8,
+    },
+    statValue: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#1F2937',
+        marginBottom: 8,
+    },
+    progressBar: {
+        height: 6,
+        backgroundColor: '#E5E7EB',
+        borderRadius: 3,
+        overflow: 'hidden',
+    },
+    progressFill: {
+        height: '100%',
+        backgroundColor: '#6366F1',
+        borderRadius: 3,
+    },
+
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: '#fff',
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        padding: 20,
+        maxHeight: '80%',
+    },
+    modalHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    modalTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#1F2937',
+    },
+    modalAvatar: {
+        alignItems: 'center',
+        marginBottom: 20,
+        position: 'relative',
+    },
+    modalAvatarImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+    },
+    modalAvatarEdit: {
+        position: 'absolute',
+        bottom: 0,
+        right: '35%',
+        backgroundColor: '#6366F1',
+        width: 32,
+        height: 32,
+        borderRadius: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 3,
+        borderColor: '#fff',
+    },
+    formGroup: {
+        marginBottom: 20,
+    },
+    formLabel: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#374151',
+        marginBottom: 8,
+    },
+    formInput: {
+        backgroundColor: '#F9FAFB',
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+        borderRadius: 12,
+        padding: 16,
+        fontSize: 16,
+        color: '#1F2937',
+    },
+    textArea: {
+        height: 80,
+        textAlignVertical: 'top',
+    },
+    saveButton: {
+        backgroundColor: '#6366F1',
+        padding: 18,
+        borderRadius: 12,
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    saveButtonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+});

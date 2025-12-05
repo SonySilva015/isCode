@@ -1,24 +1,43 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { Stack } from "expo-router";
+import { ThemeProvider } from "../context/themeprovidor";
+import { colors } from "../styles/colors";
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
+    <ThemeProvider>
+      <Stack >
+        <Stack.Screen name="index" options={{ title: 'Home', headerShown: false }} />
+        <Stack.Screen name="signup" options={{ title: '', headerShown: false }} />
+        <Stack.Screen name="(drawer)" options={{ title: '', headerShown: false }} />
+        <Stack.Screen name="payment" options={{ title: '', headerShown: false }} />
+        <Stack.Screen name="profile" options={{
+          title: '', headerShown: false,
+          headerStyle: { backgroundColor: colors.perfilbar },
+          headerTintColor: 'white',
+          headerTitleStyle: { color: 'white' },
+          headerShadowVisible: false,
+        }} />
+
+        <Stack.Screen name="[id]" options={{
+          title: '', headerShown: true,
+          headerStyle: { backgroundColor: colors.second },
+          headerTintColor: 'white',
+          headerTitleStyle: { color: 'white' },
+          headerShadowVisible: false,
+        }} />
+        <Stack.Screen name="notification" options={{
+          title: '', headerShown: true,
+          headerStyle: { backgroundColor: '#8629CF' },
+          headerTintColor: 'white',
+          headerTitleStyle: { color: 'white' },
+          headerShadowVisible: false,
+        }} />
+
+      </Stack >
+
     </ThemeProvider>
+
   );
 }
