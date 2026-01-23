@@ -1,23 +1,30 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Image, StyleSheet, Text, View } from "react-native";
+import { db } from '../db';
+import { users } from '../db/schemas';
 
-export default function SplashScreen: React.FC<Props> = ({ navigation }) {
+interface Props {
+    navigation: any;
+}
+
+export default function SplashScreen({ navigation }: Props) {
     useEffect(() => {
         const checkUser = async () => {
-            const stored = await AsyncStorage.getItem("iscode_user");
+            const user = await db.select().from(users).limit(1).get();
+            alert(user ? `User found: ${user.name}` : 'No user found');
             setTimeout(() => {
-                if (stored) navigation.replace("Home");
-                else navigation.replace("SignUp");
+                if (user) navigation.replace("Home");
+                else navigation.replace("Home");
             }, 2000);
         };
+
         checkUser();
-    }, []);
+    }, [navigation]);
 
     return (
         <View style={styles.container}>
             <Image
-                source={{ uri: "https://i.imgur.com/6u1f8QX.png" }} // pode substituir pela sua logo
+                source={require('../assets/icon/ChatGPT Image 12_11_2025, 15_36_46 (Edited).png')}
                 style={styles.logo}
             />
             <Text style={styles.title}>iscode</Text>
@@ -29,7 +36,7 @@ export default function SplashScreen: React.FC<Props> = ({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#3b2667", // lilás escuro
+        backgroundColor: "#3b2667",
         justifyContent: "center",
         alignItems: "center",
     },

@@ -25,7 +25,8 @@ export const styles = StyleSheet.create({
     },
     userInfo: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        gap: 8
     },
     allside: {
         flexDirection: 'row',

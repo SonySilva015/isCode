@@ -1,0 +1,391 @@
+import PrimaryButton from '@/components/butttons/primary';
+import SecondButton from '@/components/butttons/second';
+import Progress from '@/components/progress/progress';
+import { useTheme } from '@/context/useTheme';
+import { courseData } from '@/data/learn';
+import { db } from '@/db/';
+import { courses, modules, userCourses, users } from '@/db/schemas';
+import { createLearnStyles } from '@/styles/learn';
+import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { eq } from 'drizzle-orm';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { Modal, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import * as Animatable from 'react-native-animatable';
+import { ScrollView } from 'react-native-gesture-handler';
+
+async function getUsers() {
+    try {
+        const userById = await db.select().from(users).where(eq(users.id, 1));
+        if (userById.length > 0) {
+            return userById
+        }
+    } catch (error) {
+        console.error('Erro ao ler usuários:', error);
+    }
+}
+
+// Função para buscar cursos do usuário
+async function getUserCourses(userId: number) {
+    try {
+        const userCoursesData = await db.select().from(userCourses).where(eq(userCourses.userId, userId));
+        return userCoursesData;
+    } catch (error) {
+        console.error('Erro ao ler cursos do usuário:', error);
+        return [];
+    }
+}
+
+// Função para buscar detalhes dos cursos
+async function getCourseDetails(courseIds: number[]) {
+    try {
+        if (courseIds.length === 0) return [];
+
+        const coursesData = await db.select().from(courses).where(eq(courses.id, courseIds[0]));
+        return coursesData;
+    } catch (error) {
+        console.error('Erro ao ler detalhes dos cursos:', error);
+        return [];
+    }
+}
+
+// Função para buscar módulos de um curso
+async function getCourseModules(courseId: number) {
+    try {
+        const modulesData = await db.select().from(modules).where(eq(modules.courseId, courseId));
+        return modulesData;
+    } catch (error) {
+        console.error('Erro ao ler módulos do curso:', error);
+        return [];
+    }
+}
+
+const Learn = () => {
+    const { mode, colors } = useTheme();
+    const styles = createLearnStyles(colors)
+
+    const router = useRouter();
+
+    // Estados para gerenciar cursos e módulos
+    const [userCoursesList, setUserCoursesList] = useState<any[]>([]);
+    const [selectedCourse, setSelectedCourse] = useState<any>(null);
+    const [courseModules, setCourseModules] = useState<any[]>([]);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [dbError, setDbError] = useState(false);
+
+    // Buscar dados do usuário e cursos
+    useEffect(() => {
+        loadUserCourses();
+    }, []);
+
+    const loadUserCourses = async () => {
+        try {
+            setLoading(true);
+            setDbError(false);
+
+            // Buscar cursos do usuário
+            const userCrs = await getUserCourses(1); // ID do usuário fixo para exemplo
+            setUserCoursesList(userCrs);
+
+            if (userCrs.length > 0) {
+                // Buscar detalhes do primeiro curso
+                const courseDetails = await getCourseDetails(userCrs.map(uc => uc.courseId));
+                if (courseDetails.length > 0) {
+                    setSelectedCourse(courseDetails[0]);
+
+                    // Buscar módulos do primeiro curso
+                    const modulesData = await getCourseModules(courseDetails[0].id);
+                    setCourseModules(modulesData);
+                }
+            } else {
+                // Se não tiver cursos, usar dados locais como fallback
+                setDbError(true);
+            }
+        } catch (error) {
+            console.error('Erro ao carregar dados:', error);
+            setDbError(true);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleCourseSelect = async (course: any) => {
+        setSelectedCourse(course);
+        setShowDropdown(false);
+
+        // Buscar módulos do curso selecionado
+        const modulesData = await getCourseModules(course.id);
+        setCourseModules(modulesData);
+    };
+
+    const openTopic = (topicId: number) => {
+        router.push(`../../lessons/${topicId}`);
+    };
+
+    const openLesson = (lessonId: number) => {
+        router.push(`../../lessons/${lessonId}`);
+    };
+
+    const getNextLessonId = (topic: any) => {
+        const nextLesson = topic.lessons.find((lesson: any) => !lesson.completed);
+        return nextLesson ? nextLesson.id : topic.lessons[0].id;
+    };
+
+    const calculaEstado = () => {
+        let totalLessons = 0;
+        let completedLessons = 0;
+        let totalTopics = courseData.length;
+        let completedTopics = 0;
+
+        courseData.forEach(topic => {
+            totalLessons += topic.lessons.length;
+            completedLessons += topic.completedLessons;
+            if (topic.progress === 100) completedTopics++;
+        });
+
+        return { totalLessons, completedLessons, totalTopics, completedTopics };
+    };
+
+    const stats = calculaEstado();
+
+    // Função para renderizar os módulos do curso selecionado
+    const renderModules = () => {
+        if (!selectedCourse || courseModules.length === 0) {
+            return null;
+        }
+
+        return (
+            <Animatable.View
+                animation="fadeInRight"
+                duration={500}
+                delay={500}
+                easing="ease-out-cubic"
+                style={{ flex: 1 }}
+            >
+                <View style={styles.cardContainer}>
+                    <View style={styles.cardHeader}>
+                        <View style={[styles.iconContainer, { backgroundColor: '#667eea20' }]}>
+                            <FontAwesome5 name="book" size={24} color="#667eea" />
+                        </View>
+                        <View style={styles.topicInfo}>
+                            <Text style={styles.title}>Módulos do Curso: {selectedCourse.title}</Text>
+                            <Text style={styles.textBody}>{selectedCourse.description || 'Explore os módulos abaixo'}</Text>
+                        </View>
+                    </View>
+
+                    <View style={styles.modulesList}>
+                        {courseModules.map((module, index) => (
+                            <TouchableOpacity
+                                key={module.id}
+                                style={[
+                                    styles.moduleItem,
+                                    index === courseModules.length - 1 && styles.lastModuleItem
+                                ]}
+                                onPress={() => openLesson(module.id)}
+                            >
+                                <View style={styles.moduleHeader}>
+                                    <View style={styles.moduleNumber}>
+                                        <Text style={styles.moduleNumberText}>{index + 1}</Text>
+                                    </View>
+                                    <View style={styles.moduleInfo}>
+                                        <Text style={styles.moduleTitle}>{module.title}</Text>
+                                        <Text style={styles.moduleDescription} numberOfLines={2}>
+                                            {module.description}
+                                        </Text>
+                                        {module.duration && (
+                                            <View style={styles.moduleDuration}>
+                                                <Ionicons name="time-outline" size={12} color="#64748b" />
+                                                <Text style={styles.durationText}>{module.duration}</Text>
+                                            </View>
+                                        )}
+                                    </View>
+                                    {module.completed ? (
+                                        <Ionicons name="checkmark-circle" size={20} color="#10b981" />
+                                    ) : (
+                                        <MaterialIcons name="play-circle-outline" size={20} color="#667eea" />
+                                    )}
+                                </View>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                </View>
+            </Animatable.View>
+        );
+    };
+
+    return (
+        <View style={{ flex: 1, backgroundColor: colors.background }}>
+            <StatusBar barStyle={mode === 'dark' ? 'light-content' : 'dark-content'} backgroundColor={colors.background} />
+
+            {/* Dropdown para selecionar curso */}
+            {userCoursesList.length > 0 && (
+                <View style={styles.dropdownContainer}>
+                    <TouchableOpacity
+                        style={styles.dropdownButton}
+                        onPress={() => setShowDropdown(true)}
+                    >
+                        <View style={styles.dropdownButtonContent}>
+                            <Ionicons name="school-outline" size={20} color="#fff" />
+                            <Text style={styles.dropdownButtonText} numberOfLines={1}>
+                                {selectedCourse ? selectedCourse.title : 'Selecione um curso'}
+                            </Text>
+                        </View>
+                        <MaterialIcons name="arrow-drop-down" size={24} color="#fff" />
+                    </TouchableOpacity>
+                </View>
+            )}
+
+            {/* Modal Dropdown */}
+            <Modal
+                visible={showDropdown}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => setShowDropdown(false)}
+            >
+                <TouchableOpacity
+                    style={styles.modalOverlay}
+                    activeOpacity={1}
+                    onPress={() => setShowDropdown(false)}
+                >
+                    <View style={styles.modalContent}>
+                        <View style={styles.dropdownList}>
+                            {userCoursesList.map((userCourse) => {
+                                // Aqui você pode buscar os detalhes completos do curso se necessário
+                                return (
+                                    <TouchableOpacity
+                                        key={userCourse.id}
+                                        style={styles.dropdownItem}
+                                        onPress={() => handleCourseSelect({
+                                            id: userCourse.courseId,
+                                            title: `Curso ${userCourse.courseId}`,
+                                            description: `Descrição do curso ${userCourse.courseId}`
+                                        })}
+                                    >
+                                        <Text style={styles.dropdownItemText}>
+                                            Curso {userCourse.courseId} - Progresso: {userCourse.progress || 0}%
+                                        </Text>
+                                        {selectedCourse && selectedCourse.id === userCourse.courseId && (
+                                            <Ionicons name="checkmark" size={20} color="#667eea" />
+                                        )}
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
+
+            <ScrollView
+                contentContainerStyle={styles.scrollContainer}
+                showsVerticalScrollIndicator={false}
+            >
+                {loading ? (
+                    <View style={styles.loadingContainer}>
+                        <Ionicons name="refresh-outline" size={40} color="#667eea" />
+                        <Text style={styles.loadingText}>Carregando cursos...</Text>
+                    </View>
+                ) : dbError ? (
+                    <View style={styles.errorContainer}>
+                        <Ionicons name="alert-circle-outline" size={40} color="#ef4444" />
+                        <Text style={styles.errorText}>Erro ao carregar cursos da base de dados</Text>
+                        <TouchableOpacity style={styles.retryButton} onPress={loadUserCourses}>
+                            <Text style={styles.retryButtonText}>Tentar Novamente</Text>
+                        </TouchableOpacity>
+                    </View>
+                ) : (
+                    <>
+                        {/* Renderizar módulos se tiver um curso selecionado */}
+                        {selectedCourse && renderModules()}
+
+                        <Animatable.View
+                            animation="fadeInDown"
+                            duration={500}
+                            delay={500}
+                            easing="ease-out-cubic"
+                            style={{ flex: 1 }}
+                        >
+                            <View style={[styles.cardContainer, styles.statsCard]}>
+                                <View style={styles.statsHeader}>
+                                    <Ionicons name="stats-chart" size={24} color="#6366F1" />
+                                    <Text style={styles.statsTitle}>Seu Progresso Geral</Text>
+                                </View>
+                                <View style={styles.statsGrid}>
+                                    <View style={styles.statItem}>
+                                        <Text style={styles.statNumber}>{stats.completedLessons}/{stats.totalLessons}</Text>
+                                        <Text style={styles.statLabel}>Lições</Text>
+                                    </View>
+                                    <View style={styles.statItem}>
+                                        <Text style={styles.statNumber}>{stats.completedTopics}/{stats.totalTopics}</Text>
+                                        <Text style={styles.statLabel}>Tópicos</Text>
+                                    </View>
+                                    <View style={styles.statItem}>
+                                        <Text style={styles.statNumber}>
+                                            {Math.round((stats.completedLessons / stats.totalLessons) * 100)}%
+                                        </Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </Animatable.View>
+
+                        {/* Renderizar cursos locais se não tiver cursos do banco */}
+                        {!selectedCourse && courseData.map((topic) => (
+                            <Animatable.View
+                                key={topic.id}
+                                animation="fadeInRight"
+                                duration={500}
+                                delay={500}
+                                easing="ease-out-cubic"
+                                style={{ flex: 1 }}
+                            >
+                                <View style={styles.cardContainer}>
+                                    <View style={styles.cardHeader}>
+                                        <View style={[styles.iconContainer, { backgroundColor: `${topic.color}20` }]}>
+                                            <FontAwesome5
+                                                name={topic.icon}
+                                                size={24}
+                                                color={topic.color}
+                                            />
+                                        </View>
+                                        <View style={styles.topicInfo}>
+                                            <Text style={styles.title}>{topic.title}</Text>
+                                            <Text style={styles.textBody}>{topic.description}</Text>
+                                        </View>
+                                    </View>
+
+                                    <Progress
+                                        prog={{
+                                            title: `${topic.completedLessons} de ${topic.totalLessons} lições`,
+                                            perc: topic.progress
+                                        }}
+                                    />
+
+                                    <View style={styles.actions}>
+                                        <PrimaryButton
+                                            title="Ver Lições"
+                                            onPress={() => openTopic(topic.id)}
+                                            icon={<Ionicons name="book-outline" size={18} color="#fff" />}
+                                        />
+                                        <SecondButton
+                                            title={topic.completedLessons > 0 ? 'Continuar' : 'Começar'}
+                                            onPress={() => openLesson(getNextLessonId(topic))}
+                                        />
+                                    </View>
+
+                                    {topic.progress === 100 && (
+                                        <View style={styles.completed}>
+                                            <Ionicons name="checkmark-circle" size={16} color="#fff" />
+                                            <Text style={styles.completedText}>Completo</Text>
+                                        </View>
+                                    )}
+                                </View>
+                            </Animatable.View>
+                        ))}
+                    </>
+                )}
+            </ScrollView>
+        </View>
+    );
+};
+
+export default Learn;

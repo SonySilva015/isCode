@@ -59,15 +59,7 @@ const Layout = () => {
                     ),
                 }}
             />
-            <Tabs.Screen
-                name="rancking"
-                options={{
-                    title: 'Clasificação',
-                    tabBarIcon: ({ color, size, focused }) => (
-                        <Ionicons name={focused ? "trophy" : "trophy-outline"} size={size} color={color} />
-                    ),
-                }}
-            />
+
             <Tabs.Screen
                 name="test"
                 options={{

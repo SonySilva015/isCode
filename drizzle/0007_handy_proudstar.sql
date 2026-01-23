@@ -1,0 +1,1 @@
+ALTER TABLE `lessons` ADD `quizzes` integer DEFAULT 0;

@@ -23,6 +23,7 @@ export const lightColors = {
     activeItens: 'rgba(146, 18, 125, 0.8)',
     lessonCompleted: 'rgba(76, 175, 80, 0.2)',
     lessonCurrent: '#EFF6FF',
+    tip: 'rgba(243, 208, 170, 0.5)',
     gradient: {
         primary: 'rgba(164, 7, 179,0.8)',
         midle: 'rgba(255, 255, 255, 0.5)',
@@ -56,6 +57,7 @@ export const darkColors = {
     activeItens: 'rgb(201, 35, 243)',
     lessonCompleted: 'rgba(25, 39, 25, 0.8)',
     lessonCurrent: "rgb(19, 39, 51)",
+    tip: 'rgba(245, 197, 174, 0.5)',
     gradient: {
         primary: 'rgba(77, 11, 83, 0.69)',
         midle: 'rgb(13, 20, 36)',

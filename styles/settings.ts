@@ -76,8 +76,8 @@ export const createSettingsStyles = (colors: any) =>
         },
 
         section: {
-            marginBottom: 8,
-            marginTop: 15,
+            marginBottom: 2,
+            marginTop: 2,
         },
         settingsContainer: {
             flex: 1,
@@ -191,8 +191,8 @@ export const createSettingsStyles = (colors: any) =>
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: colors.card,
-            padding: 16,
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+
             borderRadius: 12,
             borderWidth: 1,
             borderColor: colors.border,
@@ -213,17 +213,16 @@ export const createSettingsStyles = (colors: any) =>
 
         modalContent: {
             backgroundColor: colors.card,
-            borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,
-            padding: 20,
-            maxHeight: '90%',
+            borderRadius: 30,
+            padding: 30,
+
         },
 
         modalHeader: {
             flexDirection: 'row',
-            justifyContent: 'space-between',
+            justifyContent: 'space-around',
             alignItems: 'center',
-            marginBottom: 20,
+            marginBottom: 10,
         },
 
         modalTitle: {
@@ -297,8 +296,7 @@ export const createSettingsStyles = (colors: any) =>
 
         cancelButton: {
             flex: 1,
-            backgroundColor: colors.card,
-            padding: 16,
+            backgroundColor: 'rgba(112, 122, 129, 0.3)',
             borderRadius: 12,
             alignItems: 'center',
             borderWidth: 1,
@@ -324,4 +322,140 @@ export const createSettingsStyles = (colors: any) =>
             fontWeight: '600',
             color: colors.title,
         },
+
+        headerTitle: {
+            fontSize: 28,
+            fontWeight: 'bold',
+            color: '#FFF',
+            marginBottom: 8,
+        },
+        headerSubtitle: {
+            fontSize: 16,
+            color: 'rgba(255, 255, 255, 0.8)',
+        },
+        itemSetting: {
+            backgroundColor: colors.itemBackground,
+            marginVertical: 4,
+            borderRadius: 12,
+            padding: 16,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderWidth: 1,
+            borderColor: colors.border,
+        },
+        destructiveItem: {
+            borderLeftWidth: 4,
+            borderLeftColor: '#EF4444',
+        },
+        destructiveIcon: {
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+        },
+        destructiveText: {
+            color: '#EF4444',
+            fontWeight: '600',
+        },
+        modalOverlay: {
+            flex: 1,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 20,
+        },
+
+        modalDescription: {
+            fontSize: 16,
+            lineHeight: 22,
+            textAlign: 'center',
+            marginBottom: 20,
+        },
+        confirmationText: {
+            fontSize: 14,
+            marginBottom: 8,
+            textAlign: 'center',
+        },
+        confirmationInput: {
+            borderWidth: 1,
+            borderRadius: 8,
+            padding: 12,
+            fontSize: 16,
+            marginBottom: 24,
+            textAlign: 'center',
+        },
+        modalButtons: {
+            marginTop: 16,
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            gap: 12,
+        },
+        modalButton: {
+            flex: 1,
+            paddingVertical: 2,
+            borderRadius: 8,
+            alignItems: 'center',
+        },
+
+        deleteButtonText: {
+            color: colors.text,
+            fontSize: 16,
+            fontWeight: '600',
+        },
+        disabledButton: {
+            opacity: 0.6,
+        },
+        aboutContent: {
+            alignItems: 'center',
+            marginVertical: 20,
+        },
+        appName: {
+            fontSize: 28,
+            fontWeight: 'bold',
+            marginBottom: 4,
+        },
+        appVersion: {
+            fontSize: 16,
+            marginBottom: 20,
+        },
+        aboutDescription: {
+            fontSize: 16,
+            lineHeight: 24,
+            textAlign: 'center',
+            marginBottom: 24,
+        },
+        aboutInfo: {
+            width: '100%',
+            gap: 12,
+        },
+        infoRow: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 12,
+        },
+        infoText: {
+            fontSize: 14,
+            flex: 1,
+        },
+        closeButton: {
+            paddingVertical: 14,
+            borderRadius: 8,
+            alignItems: 'center',
+            marginTop: 20,
+        },
+        closeButtonText: {
+            color: '#FFF',
+            fontSize: 16,
+            fontWeight: '600',
+        },
+        deleteDataInfo: {
+            marginVertical: 20,
+            gap: 12,
+        },
+        infoItem: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 12,
+        },
+
+
+
     });

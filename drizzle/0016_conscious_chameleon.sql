@@ -1,0 +1,1 @@
+ALTER TABLE `xp_levels` ADD `nextLevel` integer DEFAULT 100;

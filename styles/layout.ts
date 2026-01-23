@@ -75,12 +75,13 @@ export const createSettingsStyles = (colors: any) => StyleSheet.create({
     statValue: {
         fontSize: 16,
         fontWeight: '700',
-        color: '#FFF',
+        color: 'rgba(240, 162, 110, 0.7)',
     },
     statLabel: {
         fontSize: 11,
-        color: 'rgba(255, 255, 255, 0.7)',
+        color: 'rgba(243, 166, 114, 0.7)',
         marginTop: 2,
+        fontWeight: '700',
     },
     statDivider: {
         width: 1,

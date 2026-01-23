@@ -1,5 +1,6 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 
+const { width, height } = Dimensions.get('window');
 
 export const createLearnStyles = (colors: any) => StyleSheet.create({
     scrollContainer: {
@@ -36,8 +37,13 @@ export const createLearnStyles = (colors: any) => StyleSheet.create({
         borderWidth: 1,
         borderColor: colors.borderCard,
     },
+    cardLocked: {
+        backgroundColor: colors.card,
+        opacity: 0.6,
+
+    },
     cardHeader: {
-        flexDirection: 'row',
+
         marginTop: 5,
         marginBottom: 16,
     },
@@ -119,11 +125,11 @@ export const createLearnStyles = (colors: any) => StyleSheet.create({
         right: 2,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#10B981',
         paddingHorizontal: 10,
         paddingVertical: 4,
-        borderRadius: 12,
-        gap: 4,
+        marginBottom: 3
+
+
     },
     completedText: {
         color: '#fff',
@@ -190,5 +196,186 @@ export const createLearnStyles = (colors: any) => StyleSheet.create({
         top: 0,
         height: 140,
         borderRadius: 20
-    }
+    },
+    dropdownContainer: {
+        marginHorizontal: 20,
+        marginTop: 60,
+        marginBottom: 10,
+    },
+    dropdownButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: colors.primary || '#667eea',
+        paddingHorizontal: 16,
+        paddingVertical: 14,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.3)',
+    },
+    dropdownButtonContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+    },
+    dropdownButtonText: {
+        flex: 1,
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+        marginLeft: 12,
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'flex-start',
+        paddingTop: 120,
+    },
+    modalContent: {
+        backgroundColor: 'transparent',
+        paddingHorizontal: 20,
+    },
+    dropdownList: {
+        backgroundColor: colors.card || '#fff',
+        borderRadius: 12,
+        overflow: 'hidden',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 12,
+        elevation: 5,
+    },
+    dropdownItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 16,
+        paddingVertical: 14,
+        borderBottomWidth: 1,
+        borderBottomColor: colors.border || '#f1f5f9',
+    },
+    dropdownItemText: {
+        fontSize: 16,
+        color: colors.text || '#1e293b',
+        fontWeight: '500',
+        flex: 1,
+    },
+    modulesList: {
+        marginTop: 16,
+    },
+    moduleItem: {
+        backgroundColor: colors.surface || '#f8fafc',
+        borderRadius: 8,
+        padding: 12,
+        marginBottom: 8,
+    },
+    lastModuleItem: {
+        marginBottom: 0,
+    },
+    moduleHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    moduleNumber: {
+        width: 30,
+        height: 30,
+        borderRadius: 15,
+        backgroundColor: colors.primary || '#667eea',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 12,
+    },
+    moduleNumberText: {
+        color: '#fff',
+        fontWeight: '600',
+        fontSize: 12,
+    },
+    moduleInfo: {
+        flex: 1,
+    },
+    moduleTitle: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: colors.text || '#1e293b',
+        marginBottom: 4,
+    },
+    moduleDescription: {
+        fontSize: 14,
+        color: colors.textSecondary || '#64748b',
+        lineHeight: 20,
+        marginBottom: 8,
+    },
+    moduleDuration: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    durationText: {
+        fontSize: 12,
+        color: colors.textSecondary || '#64748b',
+        marginLeft: 4,
+    },
+    loadingContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 60,
+    },
+    loadingText: {
+        fontSize: 16,
+        color: colors.textSecondary || '#64748b',
+        marginTop: 16,
+    },
+    errorContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 60,
+    },
+    errorText: {
+        fontSize: 16,
+        color: colors.error || '#ef4444',
+        textAlign: 'center',
+        marginTop: 16,
+        marginBottom: 24,
+        lineHeight: 24,
+    },
+    retryButton: {
+        backgroundColor: colors.primary || '#667eea',
+        paddingHorizontal: 24,
+        paddingVertical: 12,
+        borderRadius: 12,
+    },
+    retryButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    overlay: {
+        position: 'absolute',
+        width,
+        height,
+        backgroundColor: 'rgba(0,0,0,0.3)',
+    },
+    modalContainer: {
+
+        position: 'absolute',
+        width,
+        height: 'auto', // altura do modal
+        backgroundColor: colors.background,
+        top: 0,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        paddingTop: 16,
+        zIndex: 1000,
+    },
+    courseCard: {
+        width: 150,
+        height: 150,
+        paddingVertical: 5,
+        paddingHorizontal: 5,
+        borderRadius: 12,
+        marginLeft: 8,
+        marginBottom: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 3,
+    },
 });

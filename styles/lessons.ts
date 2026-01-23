@@ -3,11 +3,13 @@ import { StyleSheet } from "react-native";
 export const stylesLesson = (colors: any) => StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent: 'center',
+        alignContent: 'center',
         backgroundColor: colors.background,
 
     },
     header: {
-        paddingTop: 60,
+        paddingTop: 30,
         paddingBottom: 30,
         paddingHorizontal: 20,
     },
@@ -82,6 +84,7 @@ export const stylesLesson = (colors: any) => StyleSheet.create({
         elevation: 3,
     },
     lessonCardLocked: {
+
         backgroundColor: colors.card,
         borderColor: colors.border,
         opacity: 0.6,
@@ -187,5 +190,24 @@ export const stylesLesson = (colors: any) => StyleSheet.create({
         color: '#FFFFFF',
         fontSize: 10,
         fontWeight: 'bold',
+    },
+    // Adicione estes estilos:
+    lessonsHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+
+    refreshButton: {
+        padding: 8,
+    },
+
+    // Estilos para o container de loading
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colors.background,
     },
 });

@@ -1,31 +1,36 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
+import { db } from '../db';
+import { users } from '../db/schemas';
 
 export default function SplashScreen() {
   useEffect(() => {
-    const checkUser = async () => {
+    const bootstrap = async () => {
       try {
-        const stored = await AsyncStorage.getItem("iscode_user");
+        // 🔒 pequena garantia extra
+        await new Promise(res => setTimeout(res, 300));
 
-        // Pequeno delay para exibir o splash bonito
+        const result = await db
+          .select()
+          .from(users)
+          .limit(1)
+          .all();
+
+        const user = result.length > 0;
+
         setTimeout(() => {
-          if (stored) {
-            // 🔹 Substitui a rota, não permite voltar
-            router.replace("/home");
-          } else {
-            router.replace("/signup");
-          }
+          router.replace(user ? "/(drawer)/(tabs)/home" : "/signup");
         }, 2000);
+
       } catch (error) {
         console.error("Erro ao verificar usuário:", error);
         router.replace("/signup");
       }
     };
 
-    checkUser();
-  }, []); // 🔹 executa apenas 1 vez ao montar
+    bootstrap();
+  }, []);
 
   return (
     <View style={styles.container}>

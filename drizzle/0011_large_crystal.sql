@@ -1,0 +1,1 @@
+ALTER TABLE `modules` ADD `lessons_completed` integer DEFAULT 0;

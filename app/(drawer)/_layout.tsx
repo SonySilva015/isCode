@@ -1,10 +1,13 @@
 import { useTheme } from '@/context/useTheme';
+import { getCurrentXpLevel } from '@/services/progress_here.service';
 import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
+import { useFocusEffect } from '@react-navigation/native'; // Importar o useFocusEffect
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, usePathname } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
     Image,
     Platform,
@@ -14,6 +17,8 @@ import {
     View
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { db } from '../../db';
+import { users } from '../../db/schemas';
 import { createSettingsStyles } from '../../styles/layout';
 
 interface MenuItem {
@@ -27,62 +32,92 @@ interface CustomDrawerContentProps {
     navigation: any;
 }
 
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    age: number;
+    picture: string;
+    plan: string;
+}
+interface xpLevel {
+    id: number;
+    level: number | null;
+    xp: number | null;
+}
+
+// Fallback avatar padrão
+const DEFAULT_AVATAR = require('../../assets/avatar/default.png');
+
 const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({ navigation }) => {
     const { mode, colors } = useTheme();
     const styles = createSettingsStyles(colors);
     const pathname = usePathname();
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [userPhotoUri, setUserPhotoUri] = useState<string | null>(null);
+    const [xpLevel, setXpLevel] = useState<xpLevel | null>(null);
 
+    // Função para carregar os dados do usuário
+    const loadUserData = useCallback(async () => {
+        try {
+            setLoading(true);
 
-    const menuItems: MenuItem[] = useMemo(() => [
-        {
-            key: 'home',
-            label: 'Home',
-            icon: 'home',
-            route: 'home',
-        },
-        {
-            key: 'profile',
-            label: 'Perfil',
-            icon: 'person',
-            route: 'profile',
-        },
-        {
-            key: 'progress',
-            label: 'Progresso',
-            icon: 'trending-up',
-            route: 'progress',
-        },
-        {
-            key: 'courses',
-            label: 'Meus Cursos',
-            icon: 'school',
-            route: 'learn',
-        },
-        {
-            key: 'favorites',
-            label: 'Favoritos',
-            icon: 'favorite',
-            route: 'favorites',
-        },
-        {
-            key: 'settings',
-            label: 'Configurações',
-            icon: 'settings',
-            route: 'settings',
-        },
-        {
-            key: 'help',
-            label: 'Ajuda',
-            icon: 'help-outline',
-            route: '/(drawer)/help',
-        },
-        {
-            key: 'about',
-            label: 'Sobre',
-            icon: 'info-outline',
-            route: '/(drawer)/about',
-        },
-    ], []);
+            // 1. Buscar usuário do banco de dados
+            const result = await db.select().from(users).limit(1).execute();
+            const currentXpLevel = await getCurrentXpLevel();
+
+            if (currentXpLevel) {
+                setXpLevel(currentXpLevel);
+            } else {
+                setXpLevel(null);
+            }
+
+            if (result.length > 0) {
+                const userData = result[0] as User;
+                setUser(userData);
+
+                // 2. Se o usuário tem foto personalizada (custom_photo), buscar do AsyncStorage
+                if (userData.picture === 'custom_photo') {
+                    const photoUri = await AsyncStorage.getItem(`user_photo_${userData.email}`);
+                    if (photoUri) {
+                        setUserPhotoUri(photoUri);
+                    } else {
+                        setUserPhotoUri(null);
+                    }
+                } else {
+                    setUserPhotoUri(null);
+                }
+            }
+        } catch (error) {
+            console.error('Erro ao buscar dados do usuário:', error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    // Carregar dados quando o drawer receber foco
+    useFocusEffect(
+        useCallback(() => {
+            loadUserData();
+
+            // Opcional: Adicionar um intervalo para atualização automática (se necessário)
+            // const interval = setInterval(loadUserData, 30000); // Atualiza a cada 30 segundos
+            // return () => clearInterval(interval);
+        }, [loadUserData])
+    );
+
+    // Carregar dados na montagem inicial também
+    useEffect(() => {
+        loadUserData();
+    }, [loadUserData]);
+
+    const menuItems: MenuItem[] = [
+        { key: 'profile', label: 'Perfil', icon: 'person', route: '/profile' },
+        { key: 'courses', label: 'Cursos Online', icon: 'menu-book', route: '/courses' },
+        { key: 'settings', label: 'Configurações', icon: 'settings', route: '/settings' },
+        { key: 'about', label: 'Sobre', icon: 'info-outline', route: '/about' },
+    ];
 
     const isActive = (route: string): boolean => {
         const routeSegment = route.split('/').pop() || '';
@@ -97,10 +132,23 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({ navigation })
 
     const handleLogout = () => {
         navigation.closeDrawer();
-        // Aqui você adicionaria a lógica de logout
+        // Aqui você adicionaria a lógica de logout (limpar tokens, etc.)
         setTimeout(() => {
             router.replace('/');
         }, 300);
+    };
+
+    const getAvatarSource = () => {
+        if (loading) {
+            return DEFAULT_AVATAR;
+        }
+
+        // Se o usuário tem foto personalizada do AsyncStorage
+        if (userPhotoUri) {
+            return { uri: userPhotoUri };
+        }
+
+        return DEFAULT_AVATAR;
     };
 
     const renderMenuItem = (item: MenuItem) => {
@@ -117,14 +165,10 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({ navigation })
                 activeOpacity={0.6}
             >
                 <View style={styles.menuItemContent}>
-                    <View style={[
-                        styles.menuIconContainer
-
-                    ]}>
+                    <View style={styles.menuIconContainer}>
                         <MaterialIcons
                             name={item.icon as any}
                             size={22}
-
                             color={active ? colors.activeItens : colors.text}
                         />
                     </View>
@@ -167,27 +211,47 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({ navigation })
                         activeOpacity={0.8}
                     >
                         <View style={styles.avatarContainer}>
-                            <Image
-                                source={require('../../assets/images/eu.jpg')}
-                                style={styles.avatar}
-                                resizeMode="cover"
-                            />
+                            {loading ? (
+                                <View style={[styles.avatar, { backgroundColor: colors.card }]}>
+                                    <MaterialIcons name="person" size={40} color={colors.textSecondary} />
+                                </View>
+                            ) : (
+                                <Image
+                                    source={getAvatarSource()}
+                                    style={styles.avatar}
+                                    resizeMode="cover"
+                                    defaultSource={DEFAULT_AVATAR}
+                                />
+                            )}
                             <View style={styles.onlineIndicator} />
                         </View>
 
                         <View style={styles.userInfo}>
-                            <Text style={styles.userName}>Sony Silva</Text>
-                            <Text style={styles.userEmail}>sony.silva@example.com</Text>
+                            {loading ? (
+                                <>
+                                    <Text style={styles.userName}>Carregando...</Text>
+                                    <Text style={styles.userEmail}>Por favor aguarde</Text>
+                                </>
+                            ) : (
+                                <>
+                                    <Text style={styles.userName}>
+                                        {user?.name || 'Usuário'}
+                                    </Text>
+                                    <Text style={styles.userEmail}>
+                                        {user?.email || 'usuario@exemplo.com'}
+                                    </Text>
+                                </>
+                            )}
 
                             <View style={styles.userStats}>
                                 <View style={styles.statItem}>
-                                    <Text style={styles.statValue}>12</Text>
-                                    <Text style={styles.statLabel}>Cursos</Text>
+                                    <Text style={styles.statValue}>{xpLevel?.level || 0}</Text>
+                                    <Text style={styles.statLabel}>nível</Text>
                                 </View>
                                 <View style={styles.statDivider} />
                                 <View style={styles.statItem}>
-                                    <Text style={styles.statValue}>85%</Text>
-                                    <Text style={styles.statLabel}>Progresso</Text>
+                                    <Text style={styles.statValue}>{xpLevel?.xp || 0}</Text>
+                                    <Text style={styles.statLabel}>xp</Text>
                                 </View>
                             </View>
                         </View>
@@ -197,7 +261,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({ navigation })
                 {/* Botão Premium Destaque */}
                 <TouchableOpacity
                     style={styles.premiumCard}
-                    onPress={() => handleNavigation('/payment')}
+                    onPress={() => router.push('/payment')}
                     activeOpacity={0.9}
                 >
                     <LinearGradient
@@ -209,8 +273,17 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({ navigation })
                         <MaterialIcons name="workspace-premium" size={24} color="#FFF" />
                         <View style={styles.premiumCardContent}>
                             <Text style={styles.premiumCardTitle}>Torne-se Premium</Text>
+                            <Text style={styles.premiumCardSubtitle}>
+                                {user?.plan === 'free'
+                                    ? 'Desbloqueie recursos'
+                                    : 'Plano Premium Ativo'}
+                            </Text>
                         </View>
-                        <MaterialIcons name="arrow-forward" size={20} color="#FFF" />
+                        <MaterialIcons
+                            name={user?.plan === 'premium' ? "check-circle" : "arrow-forward"}
+                            size={20}
+                            color="#FFF"
+                        />
                     </LinearGradient>
                 </TouchableOpacity>
 
@@ -218,18 +291,9 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({ navigation })
                 <View style={styles.menuSection}>
                     <Text style={styles.menuSectionTitle}>MENU PRINCIPAL</Text>
                     <View style={styles.menuItemsContainer}>
-                        {menuItems.slice(0, 5).map(renderMenuItem)}
+                        {menuItems.map(renderMenuItem)}
                     </View>
                 </View>
-
-                {/* Seção de Configurações */}
-                <View style={styles.menuSection}>
-                    <Text style={styles.menuSectionTitle}>CONFIGURAÇÕES</Text>
-                    <View style={styles.menuItemsContainer}>
-                        {menuItems.slice(5).map(renderMenuItem)}
-                    </View>
-                </View>
-
 
             </DrawerContentScrollView>
 
@@ -246,7 +310,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({ navigation })
                     </TouchableOpacity>
 
                     <View style={styles.footerInfo}>
-                        <Text style={styles.versionText}>Versão 2.1.4</Text>
+                        <Text style={styles.versionText}>Versão 1.1.5</Text>
                         <Text style={styles.buildText}>Build #2156</Text>
                     </View>
                 </View>
@@ -279,15 +343,18 @@ const DrawerLayout: React.FC = () => {
         <GestureHandlerRootView style={styles.gestureContainer}>
             <Drawer
                 drawerContent={(props) => <CustomDrawerContent {...props} />}
-                screenOptions={screenOptions}
+                screenOptions={{
+                    ...screenOptions,
+                    headerLeft: () => (
+                        <TouchableOpacity
+                            style={{ padding: 12 }}
+                            onPress={() => router.push('/home')}
+                        >
+                            <MaterialIcons name="arrow-back" size={24} color={'white'} />
+                        </TouchableOpacity>
+                    )
+                }}
             >
-                <Drawer.Screen
-                    name="home"
-                    options={{
-                        drawerLabel: 'Home',
-                        title: 'Início',
-                    }}
-                />
                 <Drawer.Screen
                     name="profile"
                     options={{
@@ -303,37 +370,13 @@ const DrawerLayout: React.FC = () => {
                     }}
                 />
                 <Drawer.Screen
-                    name="progress"
-                    options={{
-                        headerShown: true,
-                        drawerLabel: 'Progresso',
-                        title: 'Meu Progresso',
-                    }}
-                />
-                <Drawer.Screen
-                    name="courses"
-                    options={{
-                        headerShown: true,
-                        drawerLabel: 'Cursos',
-                        title: 'Meus Cursos',
-                    }}
-                />
-                <Drawer.Screen
-                    name="favorites"
-                    options={{
-                        headerShown: true,
-                        drawerLabel: 'Favoritos',
-                        title: 'Conteúdos Favoritos',
-                    }}
-                />
-                <Drawer.Screen
                     name="settings"
                     options={{
                         headerShown: true,
                         drawerLabel: 'Configurações',
                         title: 'Configurações',
                         headerStyle: {
-                            backgroundColor: colors.primary,
+                            backgroundColor: '#6366F1',
                             elevation: 0,
                             shadowOpacity: 0,
                         },
@@ -341,11 +384,17 @@ const DrawerLayout: React.FC = () => {
                     }}
                 />
                 <Drawer.Screen
-                    name="help"
+                    name="courses"
                     options={{
                         headerShown: true,
-                        drawerLabel: 'Ajuda',
-                        title: 'Central de Ajuda',
+                        drawerLabel: 'Cursos',
+                        title: 'Cursos',
+                        headerStyle: {
+                            backgroundColor: '#667eea',
+                            elevation: 0,
+                            shadowOpacity: 0,
+                        },
+                        headerTintColor: '#FFF',
                     }}
                 />
                 <Drawer.Screen
@@ -354,21 +403,6 @@ const DrawerLayout: React.FC = () => {
                         headerShown: true,
                         drawerLabel: 'Sobre',
                         title: 'Sobre o App',
-                    }}
-                />
-                <Drawer.Screen
-                    name="payment"
-                    options={{
-                        headerShown: true,
-                        drawerLabel: 'Premium',
-                        title: 'Assinatura Premium',
-                        drawerItemStyle: { display: 'none' },
-                        headerStyle: {
-                            backgroundColor: colors.primary,
-                            elevation: 0,
-                            shadowOpacity: 0,
-                        },
-                        headerTintColor: '#FFF',
                     }}
                 />
             </Drawer>

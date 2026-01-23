@@ -1,12 +1,24 @@
 import { useTheme } from '@/context/useTheme';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
 import React from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { styles } from './styles';
 
-const Header = () => {
+
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    age: number;
+    picture: string;
+    plan: string;
+}
+
+interface HeaderProps {
+    user: User | null;  // Garantir que o usuário pode ser null
+}
+const Header: React.FC<HeaderProps> = ({ user }) => {
     const { colors } = useTheme();
     return (
         <View style={styles.header}>
@@ -22,22 +34,7 @@ const Header = () => {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
             />
-            <View style={styles.headerTop}>
-                <View style={styles.userInfo}>
-                    <Image source={require('../../assets/images/eu.jpg')}
-                        style={styles.avatar} ></Image>
-                    <View>
-                        <Text style={styles.greeting}>Sony Da Silva</Text>
-                        <Text style={styles.subtitle}>Nivel 100</Text>
-                    </View>
 
-                </View>
-                <TouchableOpacity style={styles.notificationButton} onPress={() => router.push('/profile')}>
-                    <Ionicons name="person-outline" size={24} color="#fff" />
-
-                </TouchableOpacity>
-
-            </View>
             <View style={styles.allside}>
                 <View style={styles.eachSide}>
 
