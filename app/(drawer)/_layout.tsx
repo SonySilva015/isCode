@@ -1,9 +1,9 @@
 import { useTheme } from '@/context/useTheme';
 import { getCurrentXpLevel } from '@/services/progress_here.service';
-import { MaterialIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
-import { useFocusEffect } from '@react-navigation/native'; // Importar o useFocusEffect
+import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, usePathname } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
@@ -46,10 +46,9 @@ interface xpLevel {
     xp: number | null;
 }
 
-// Fallback avatar padrão
-const DEFAULT_AVATAR = require('../../assets/avatar/default.png');
 
 const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({ navigation }) => {
+    const STORAGE_PREFIX = 'user_photo_';
     const { mode, colors } = useTheme();
     const styles = createSettingsStyles(colors);
     const pathname = usePathname();
@@ -100,15 +99,14 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({ navigation })
     useFocusEffect(
         useCallback(() => {
             loadUserData();
+            getAvatarSource();
 
-            // Opcional: Adicionar um intervalo para atualização automática (se necessário)
-            // const interval = setInterval(loadUserData, 30000); // Atualiza a cada 30 segundos
-            // return () => clearInterval(interval);
         }, [loadUserData])
     );
 
     // Carregar dados na montagem inicial também
     useEffect(() => {
+        getAvatarSource();
         loadUserData();
     }, [loadUserData]);
 
@@ -138,17 +136,53 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({ navigation })
         }, 300);
     };
 
-    const getAvatarSource = () => {
+    const getAvatarSource = async () => {
+        try {
+            const storedPhoto = await AsyncStorage.getItem(
+                `${STORAGE_PREFIX}${user?.email}`
+            );
+            if (storedPhoto) {
+                setUserPhotoUri(storedPhoto);
+            } else {
+                setUserPhotoUri(null);
+            }
+
+        } catch (error) {
+            console.error('Erro ao obter fonte do avatar:', error);
+        }
+        return null;
+    };
+
+    const renderAvatar = () => {
         if (loading) {
-            return DEFAULT_AVATAR;
+            return (
+                <View style={[styles.avatar, { backgroundColor: colors.card }]}>
+                    <Ionicons name="person" size={50} color="rgba(255,255,255,0.9)" />
+                </View>
+            );
         }
 
-        // Se o usuário tem foto personalizada do AsyncStorage
+
         if (userPhotoUri) {
-            return { uri: userPhotoUri };
+            return (
+                <Image
+                    source={{ uri: userPhotoUri }}
+                    style={styles.avatar}
+                    resizeMode="cover"
+                    onError={() => {
+                        // Se der erro ao carregar a imagem, mostrar ícone
+                        console.log('Erro ao carregar imagem do usuário');
+                    }}
+                />
+            );
+        } else {
+            return (
+                <View style={[styles.avatar, { backgroundColor: colors.card }]}>
+                    <Ionicons name="person" size={35} color="rgba(255,255,255,0.9)" />
+                </View>
+            );
         }
 
-        return DEFAULT_AVATAR;
     };
 
     const renderMenuItem = (item: MenuItem) => {
@@ -211,18 +245,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({ navigation })
                         activeOpacity={0.8}
                     >
                         <View style={styles.avatarContainer}>
-                            {loading ? (
-                                <View style={[styles.avatar, { backgroundColor: colors.card }]}>
-                                    <MaterialIcons name="person" size={40} color={colors.textSecondary} />
-                                </View>
-                            ) : (
-                                <Image
-                                    source={getAvatarSource()}
-                                    style={styles.avatar}
-                                    resizeMode="cover"
-                                    defaultSource={DEFAULT_AVATAR}
-                                />
-                            )}
+                            {renderAvatar()}
                             <View style={styles.onlineIndicator} />
                         </View>
 
@@ -362,7 +385,7 @@ const DrawerLayout: React.FC = () => {
                         drawerLabel: 'Perfil',
                         title: 'Meu Perfil',
                         headerStyle: {
-                            backgroundColor: colors.primary,
+                            backgroundColor: colors.gradient.primary,
                             elevation: 0,
                             shadowOpacity: 0,
                         },

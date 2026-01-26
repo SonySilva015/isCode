@@ -1,5 +1,6 @@
 import { getLessonCount, getModuleById, updateCourseProgress, updateModuleProgress, updateModuleStatus } from '@/services/course.service';
 import { getLessonByid, getLessons, updateStatusLesson, updateStatusNextLesson } from '@/services/lesson.service';
+import { insertNotify } from '@/services/notify.service';
 import { getCurrentXpLevel, SetXp, updateXp, updateXp_and_Level } from '@/services/progress_here.service';
 
 
@@ -15,6 +16,7 @@ export const handleCompleteLesson = async (
     }
     try {
         const Onelesson = await getLessonByid(lessonId)
+
         if (Onelesson[0].status !== 'completed') {
             const lessonModuleCompleted = (module[0].lessons_completed || 0) + 1;
             await updateStatusLesson(lessonId);
@@ -38,14 +40,18 @@ export const handleCompleteLesson = async (
             await updateCourseProgress(module[0]?.fk_courses || 0, progCourseFixed);
             const xp_old = await getCurrentXpLevel();
             const xp_current = xp_old?.xp || 0;
-
             if (xp_current === 0) {
                 await SetXp(xp);
+                await insertNotify('Primeira vez!', `Você ganhou ${xp} pontos de XP por completar sua primeira lição! Continue assim e avance em seus estudos.`);
             } else if (xp_current >= (xp_old?.nextLevel || 100)) {
                 updateXp_and_Level(xp_current + xp, (xp_old?.level || 1) + 1, ((xp_old?.nextLevel || 100) + 100));
-            } else {
+                await insertNotify('Parabéns!', `Você alcançou o nível ${(xp_old?.level || 1) + 1}! Continue assim e avance em seus estudos.`);
 
+            } else {
                 await updateXp(xp_current + xp);
+                if ((xp_current + xp) >= (xp_old?.nextLevel || 100) / 2) {
+                    await insertNotify('Parabéns!', `Você está perto para o próximo nível! Continue assim e avance em seus estudos.`);
+                }
             }
             if ((module[0].lessons_completed || 0) === (module[0].lessons_count || 0)) {
                 const module = await getModuleById(moduleId + 1);

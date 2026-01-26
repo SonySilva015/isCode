@@ -1,5 +1,6 @@
 // @/services/progress.service.ts
 import { getGameLevelById, updateGameLevelStatus } from '@/services/game.service';
+import { insertNotify } from '@/services/notify.service';
 import { getCurrentXpLevel, getXpLevels, SetXp, updateXp, updateXp_and_Level } from '@/services/progress_here.service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -96,10 +97,18 @@ export const handleCompleteLesson = async (levelId: number, xp: number) => {
 
             if (xp_current === 0) {
                 await SetXp(xp);
+                await insertNotify('Primeira vez!', `Você ganhou ${xp} pontos de XP por completar sua primeira lição! Continue assim e avance em seus estudos.`);
+                await insertNotify('primeiro Treino', `Você ganhou ${xp} você treinou o seu cerebro a primeira vez! Continue!`);
+
             } else if (xp_current >= (xp_old?.nextLevel || 100)) {
                 updateXp_and_Level(xp_current + xp, (xp_old?.level || 1) + 1, ((xp_old?.nextLevel || 100) + 100));
+                await insertNotify('Parabéns!', `Você alcançou o nível ${(xp_old?.level || 1) + 1}! Continue assim e avance em seus estudos.`);
+
             } else {
                 await updateXp(xp_current + xp);
+                if ((xp_current + xp) >= (xp_old?.nextLevel || 100) / 2) {
+                    await insertNotify('Parabéns!', `Você está perto para o próximo nível! Continue assim e avance em seus estudos.`);
+                }
             }
         } catch (error) {
             console.error('Erro ao completar lição:', error);

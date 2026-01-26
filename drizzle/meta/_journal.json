@@ -120,6 +120,27 @@
       "when": 1768902534090,
       "tag": "0016_conscious_chameleon",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "6",
+      "when": 1769202197319,
+      "tag": "0017_wise_squadron_supreme",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "6",
+      "when": 1769202263478,
+      "tag": "0018_chief_demogoblin",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "6",
+      "when": 1769290303863,
+      "tag": "0019_brave_spitfire",
+      "breakpoints": true
     }
   ]
 }

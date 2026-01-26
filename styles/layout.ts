@@ -32,9 +32,12 @@ export const createSettingsStyles = (colors: any) => StyleSheet.create({
     avatar: {
         width: 70,
         height: 70,
-        borderRadius: 35,
-        borderWidth: 3,
-        borderColor: 'rgba(255, 255, 255, 0.3)',
+        borderRadius: 60,
+        backgroundColor: 'rgba(255,255,255,0.2)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 4,
+        borderColor: 'rgba(255,255,255,0.3)',
     },
     onlineIndicator: {
         position: 'absolute',
@@ -264,5 +267,19 @@ export const createSettingsStyles = (colors: any) => StyleSheet.create({
         fontSize: 10,
         color: colors.textSecondary + '80',
         marginTop: 2,
+    },
+    // No arquivo de estilos, adicione:
+    refreshIndicator: {
+        position: 'absolute',
+        top: -5,
+        right: -5,
+        backgroundColor: colors.primary,
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: colors.background,
     },
 });

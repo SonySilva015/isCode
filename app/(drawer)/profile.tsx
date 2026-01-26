@@ -1,14 +1,16 @@
+import { useTheme } from '@/context/useTheme';
 import { db } from '@/db';
 import { users } from '@/db/schemas';
 import { getLocalCourses } from '@/services/course.service';
 import { getCurrentXpLevel } from '@/services/progress_here.service';
-import { colors } from '@/styles/colors';
+import { stylesProfile } from '@/styles/profile';
 import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { eq } from 'drizzle-orm';
 import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
     ActivityIndicator,
@@ -23,7 +25,6 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-import { styles } from '../../styles/profile';
 
 /* =========================
    INTERFACES
@@ -69,9 +70,8 @@ interface Achievement {
 const STORAGE_PREFIX = 'user_photo_';
 
 const ProfileScreen = ({ navigation }: any) => {
-    /* =========================
-       STATES
-    ========================= */
+    const { colors } = useTheme();
+    const styles = stylesProfile(colors);
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<'sobre' | 'cursos' | 'conquistas'>('sobre');
@@ -259,77 +259,6 @@ const ProfileScreen = ({ navigation }: any) => {
         };
     }, [courses, userModules, user?.xp]);
 
-    /* =========================
-       BUSCAR CONQUISTAS BASEADAS NO PROGRESSO
-    ========================= */
-    const getAchievements = useMemo(() => {
-        const stats = calculateStats;
-        const achievements: Achievement[] = [
-            {
-                id: 1,
-                title: 'Primeiros Passos',
-                description: 'Complete seu primeiro módulo',
-                icon: 'walking',
-                color: '#667eea',
-                earned: stats.completedModules >= 1
-            },
-            {
-                id: 2,
-                title: 'Aprendiz Dedicado',
-                description: 'Complete 7 módulos',
-                icon: 'graduation-cap',
-                color: '#10b981',
-                earned: stats.completedModules >= 7,
-                progress: Math.min((stats.completedModules / 7) * 100, 100)
-            },
-            {
-                id: 3,
-                title: 'Mestre da Programação',
-                description: 'Complete 3 cursos',
-                icon: 'crown',
-                color: '#f59e0b',
-                earned: stats.completedCourses >= 3,
-                progress: Math.min((stats.completedCourses / 3) * 100, 100)
-            },
-            {
-                id: 4,
-                title: 'Explorador',
-                description: 'Complete módulos em diferentes áreas',
-                icon: 'compass',
-                color: '#ec4899',
-                earned: false,
-                progress: 60
-            },
-            {
-                id: 5,
-                title: 'Contribuidor',
-                description: 'Ajude outros estudantes',
-                icon: 'handshake',
-                color: '#8b5cf6',
-                earned: false,
-                progress: 40
-            },
-            {
-                id: 6,
-                title: 'Premium',
-                description: 'Atualize para o plano premium',
-                icon: 'gem',
-                color: '#FFD700',
-                earned: user?.plan === 'premium'
-            },
-            {
-                id: 7,
-                title: 'Aventureiro do Conhecimento',
-                description: `Complete ${stats.totalLessons} lições`,
-                icon: 'book-open',
-                color: '#3b82f6',
-                earned: stats.completedLessons >= 20,
-                progress: Math.min((stats.completedLessons / 20) * 100, 100)
-            },
-        ];
-
-        return achievements;
-    }, [calculateStats, user?.plan]);
 
     /* =========================
        IMAGE PICKER
@@ -607,9 +536,9 @@ const ProfileScreen = ({ navigation }: any) => {
         if (user?.plan === 'premium') {
             Alert.alert('Plano Premium', 'Você já possui o plano Premium!');
         } else {
-            navigation.navigate('Payment' as never);
+            router.push('/payment');
         }
-    }, [user?.plan, navigation]);
+    }, [user?.plan]);
 
     /* =========================
        REFRESH MANUAL
@@ -691,58 +620,6 @@ const ProfileScreen = ({ navigation }: any) => {
         );
     };
 
-    const renderAchievementCard = (achievement: Achievement) => (
-        <View key={achievement.id} style={styles.achievementCard}>
-            <View style={[
-                styles.achievementIconContainer,
-                { backgroundColor: achievement.earned ? achievement.color : '#e5e7eb' }
-            ]}>
-                <FontAwesome5
-                    name={achievement.icon as any}
-                    size={24}
-                    color={achievement.earned ? '#fff' : '#9ca3af'}
-                />
-            </View>
-
-            <View style={styles.achievementContent}>
-                <Text style={styles.achievementTitle}>{achievement.title}</Text>
-                <Text style={styles.achievementDescription}>{achievement.description}</Text>
-
-                {!achievement.earned && achievement.progress !== undefined && (
-                    <View style={styles.achievementProgress}>
-                        <Text style={styles.achievementProgressText}>
-                            {Math.round(achievement.progress)}% completo
-                        </Text>
-                        <View style={styles.achievementProgressBar}>
-                            <View
-                                style={[
-                                    styles.achievementProgressFill,
-                                    { width: `${achievement.progress}%` }
-                                ]}
-                            />
-                        </View>
-                    </View>
-                )}
-
-                <View style={[
-                    styles.achievementStatus,
-                    { backgroundColor: achievement.earned ? `${achievement.color}20` : '#f3f4f6' }
-                ]}>
-                    <FontAwesome5
-                        name={achievement.earned ? 'check-circle' : 'lock'}
-                        size={12}
-                        color={achievement.earned ? achievement.color : '#9ca3af'}
-                    />
-                    <Text style={[
-                        styles.achievementStatusText,
-                        { color: achievement.earned ? achievement.color : '#9ca3af' }
-                    ]}>
-                        {achievement.earned ? 'Conquistado' : 'Bloqueado'}
-                    </Text>
-                </View>
-            </View>
-        </View>
-    );
 
     /* =========================
        LOADING
@@ -772,7 +649,7 @@ const ProfileScreen = ({ navigation }: any) => {
        DADOS PARA RENDERIZAÇÃO
     ========================= */
     const levelBadge = getLevelBadge(user.level);
-    const achievementsWithUserPlan = getAchievements;
+
 
     // Calcular progresso para próximo nível
     const xpProgress = xpLevel ?
@@ -790,7 +667,7 @@ const ProfileScreen = ({ navigation }: any) => {
         {
             icon: 'star-outline',
             label: 'Nível',
-            value: levelBadge.label,
+            value: xpLevel?.level,
             color: levelBadge.color,
             clickable: false
         },
@@ -810,12 +687,6 @@ const ProfileScreen = ({ navigation }: any) => {
             icon: 'location-outline',
             label: 'Localização',
             value: user.location || 'Não informada',
-            clickable: false
-        },
-        {
-            icon: 'trophy-outline',
-            label: 'Conquistas',
-            value: `${achievementsWithUserPlan.filter(a => a.earned).length} / ${achievementsWithUserPlan.length}`,
             clickable: false
         },
         // NOVO ITEM: PLANO DO USUÁRIO
@@ -854,10 +725,9 @@ const ProfileScreen = ({ navigation }: any) => {
                 {/* HEADER COM GRADIENTE */}
                 <Animated.View style={[styles.gradientHeader, { height: headerHeight }]}>
                     <LinearGradient
-                        colors={[colors.primary, colors.second]}
+                        colors={[colors.gradient.primary, colors.second]}
                         style={styles.gradientHeaderInner}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
+
                     >
                         <View style={styles.headerContent}>
                             <Animated.View style={{ transform: [{ scale: avatarScale }] }}>
@@ -925,7 +795,7 @@ const ProfileScreen = ({ navigation }: any) => {
                     {[
                         { key: 'sobre', label: 'Sobre', icon: 'person' },
                         { key: 'cursos', label: 'Cursos', icon: 'book' },
-                        { key: 'conquistas', label: 'Conquistas', icon: 'trophy' },
+
                     ].map(tab => (
                         <TouchableOpacity
                             key={tab.key}
@@ -1009,7 +879,7 @@ const ProfileScreen = ({ navigation }: any) => {
                                                 styles.xpFill,
                                                 {
                                                     width: `${xpProgress}%`,
-                                                    backgroundColor: levelBadge.color
+                                                    backgroundColor: colors.primary
                                                 }
                                             ]}
                                         />
@@ -1044,19 +914,7 @@ const ProfileScreen = ({ navigation }: any) => {
                         </>
                     )}
 
-                    {activeTab === 'conquistas' && (
-                        <>
-                            <View style={styles.achievementsHeader}>
-                                <Text style={styles.sectionTitle}>Minhas Conquistas</Text>
-                                <Text style={styles.achievementsCount}>
-                                    {achievementsWithUserPlan.filter(a => a.earned).length} de {achievementsWithUserPlan.length} conquistadas
-                                </Text>
-                            </View>
-                            <View style={styles.achievementsGrid}>
-                                {achievementsWithUserPlan.map(renderAchievementCard)}
-                            </View>
-                        </>
-                    )}
+
                 </View>
             </Animated.ScrollView>
 

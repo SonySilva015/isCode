@@ -5,9 +5,10 @@ import { getCurrentXpLevel } from '@/services/progress_here.service';
 import { createHomeStyles } from '@/styles/home';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
     Image,
     ScrollView,
@@ -17,6 +18,7 @@ import {
     View
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
+
 interface User {
     id: number;
     name: string;
@@ -34,38 +36,49 @@ const Homescreen: React.FC = () => {
     const [userPhotoUri, setUserPhotoUri] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
+    // Função para carregar todos os dados
+    const loadAllData = useCallback(async () => {
+        try {
+            setLoading(true);
 
-    useEffect(() => {
-        const loadData = async () => {
+            // Carregar XP e nível
             const xpLevel = await getCurrentXpLevel();
             setLevel(xpLevel?.level || 1);
-        };
-        const fetchUserData = async () => {
-            try {
-                const result = await db.select().from(users).limit(1).execute();
 
-                if (result.length > 0) {
-                    const userData = result[0] as User;
-                    setUser(userData);
+            // Carregar dados do usuário
+            const result = await db.select().from(users).limit(1).execute();
 
-                    // Buscar foto
+            if (result.length > 0) {
+                const userData = result[0] as User;
+                setUser(userData);
+
+                // Buscar foto do AsyncStorage
+                try {
                     const photoUri = await AsyncStorage.getItem(`user_photo_${userData.email}`);
                     if (photoUri) {
                         setUserPhotoUri(photoUri);
+                    } else {
+                        setUserPhotoUri(null);
                     }
-
-
-
+                } catch (photoError) {
+                    console.error('Erro ao carregar foto:', photoError);
+                    setUserPhotoUri(null);
                 }
-            } catch (error) {
-                console.error('Erro ao buscar dados:', error);
-            } finally {
-                setLoading(false);
             }
-        };
-        loadData();
-        fetchUserData();
+        } catch (error) {
+            console.error('Erro ao carregar dados:', error);
+        } finally {
+            setLoading(false);
+        }
     }, []);
+
+    // Atualizar sempre que a tela receber foco (igual ao perfil)
+    useFocusEffect(
+        useCallback(() => {
+            console.log('🏠 Home em foco - atualizando dados...');
+            loadAllData();
+        }, [loadAllData])
+    );
 
     const getGreeting = () => {
         const hour = new Date().getHours();
@@ -96,7 +109,6 @@ const Homescreen: React.FC = () => {
         const dayOfWeek = new Date().getDay();
         return tips[dayOfWeek % tips.length];
     };
-
 
     if (loading) {
         return (
@@ -143,11 +155,8 @@ const Homescreen: React.FC = () => {
                                     <Ionicons name="person" size={24} color="#fff" />
                                 </View>
                             )}
-
                         </TouchableOpacity>
                     </View>
-
-
                 </LinearGradient>
 
                 {/* Progresso Diário */}
@@ -164,7 +173,6 @@ const Homescreen: React.FC = () => {
                         {'Ganhe mais XP para subir de nível!'}
                     </Text>
                 </Animatable.View>
-
 
                 {/* Dica do Dia */}
                 <Animatable.View

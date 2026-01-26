@@ -1,119 +1,204 @@
-import { StyleSheet } from 'react-native'
-
-
-
-export const stylesTest = (colors: any) => StyleSheet.create({
+import { StyleSheet } from 'react-native';
+export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 15,
-        backgroundColor: colors.background,
-        alignItems: 'center',
-        gap: 20
-    },
-    icon1: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(14, 245, 52, 0.3)',
-        borderRadius: 50,
-        width: 40,
-        height: 40
-    },
-    icon2: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(17, 64, 218, 0.3)',
-        borderRadius: 50,
-        width: 40,
-        height: 40
-    },
-    icon3: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(230, 14, 201, 0.3)',
-        borderRadius: 50,
-        width: 40,
-        height: 40
     },
     header: {
-        padding: 10,
-        width: '100%',
-        height: 'auto',
-        justifyContent: 'center',
-        backgroundColor: '',
-        borderRadius: 5,
-        gap: 10,
-
-    },
-    blocks: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
         alignItems: 'center',
-        marginBottom: 10
+        justifyContent: 'space-between',
+        paddingHorizontal: 16,
+        paddingTop: 10,
+        paddingBottom: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#e5e7eb',
     },
-
-    CardBlocks: {
-        width: '30%',
-        backgroundColor: colors.transWhite,
-        flexDirection: 'column',
-        height: 'auto',
-        borderRadius: 15,
-        padding: 5,
-        justifyContent: 'center',
+    headerLeft: {
+        flexDirection: 'row',
         alignItems: 'center',
         gap: 8,
-
-    },
-    prog: {
-        width: '100%',
-
-    }
-    , gradient: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        height: 200,
-        borderRadius: 15
     },
     title: {
-        color: colors.title,
-        fontSize: 24,
-        fontWeight: 'bold'
+        fontSize: 18,
+        fontWeight: 'bold',
     },
-    texts: {
-        color: colors.text,
-        fontSize: 12,
-
+    languageSelector: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        borderRadius: 6,
+        borderWidth: 1,
     },
-    textBody: {
-        fontSize: 14,
-        color: colors.text,
-        fontWeight: '500',
-        marginBottom: 10,
+    languageText: {
+        fontSize: 13,
+        fontWeight: '600',
     },
-    cardContainer: {
-        marginBottom: 10,
-        backgroundColor: colors.card,
-        width: '100%',
-        padding: 15,
-        borderRadius: 10,
-        alignSelf: 'center',
-        shadowColor: colors.shadow,
-        shadowOffset: { width: 2, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 5,
+    tabContainer: {
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderBottomColor: '#e5e7eb',
     },
-    button: {
-        padding: 10,
-        backgroundColor: colors.colorButtonprimary,
+    tab: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 10,
+        gap: 6,
+    },
+    activeTab: {
+        borderBottomWidth: 2,
+    },
+    tabText: {
+        fontSize: 13,
+        fontWeight: '600',
+    },
+    tabBadge: {
+        fontSize: 11,
+    },
+    content: {
+        flex: 1,
+    },
+    editorContent: {
+        flex: 1,
+    },
+    editorScroll: {
+        flex: 1,
+        padding: 16,
+    },
+    codeSection: {
+        marginBottom: 20,
+    },
+    codeHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 8,
+    },
+    sectionLabel: {
+        fontSize: 15,
+        fontWeight: '600',
+    },
+    trashButton: {
+        padding: 4,
+    },
+    codeInput: {
+        padding: 16,
         borderRadius: 8,
-        marginTop: 20,
+        borderWidth: 1,
+        minHeight: 300,
+        fontSize: 14,
+        fontFamily: 'monospace',
+        textAlignVertical: 'top',
     },
-    textButton: {
-        color: 'white',
+    inputSection: {
+        marginBottom: 20,
+    },
+    stdinInput: {
+        padding: 16,
+        borderRadius: 8,
+        borderWidth: 1,
+        minHeight: 80,
+        fontSize: 14,
+        fontFamily: 'monospace',
+        textAlignVertical: 'top',
+    },
+    hintText: {
+        fontSize: 12,
+        marginTop: 4,
+        fontStyle: 'italic',
+    },
+    outputContent: {
+        flex: 1,
+        padding: 16,
+    },
+    loadingContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    loadingText: {
+        fontSize: 14,
+        marginTop: 12,
+    },
+    outputScroll: {
+        flex: 1,
+    },
+    outputWrapper: {
+        borderRadius: 8,
+        borderWidth: 1,
+        padding: 16,
+    },
+    outputText: {
+        fontSize: 14,
+        fontFamily: 'monospace',
+        lineHeight: 20,
+    },
+    emptyOutput: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 40,
+    },
+    emptyText: {
+        fontSize: 14,
+        marginTop: 16,
         textAlign: 'center',
-        fontSize: 16,
     },
-
-})
+    footer: {
+        padding: 16,
+        borderTopWidth: 1,
+        borderTopColor: '#e5e7eb',
+    },
+    executeButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 14,
+        borderRadius: 8,
+        gap: 8,
+    },
+    executeButtonText: {
+        color: '#FFFFFF',
+        fontSize: 15,
+        fontWeight: '600',
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'flex-end',
+    },
+    modalContent: {
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        padding: 20,
+        maxHeight: '80%',
+    },
+    modalHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 20,
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    languageList: {
+        maxHeight: 400,
+    },
+    languageItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 14,
+        borderRadius: 8,
+        marginBottom: 6,
+        gap: 12,
+    },
+    languageItemText: {
+        fontSize: 16,
+        flex: 1,
+    },
+});

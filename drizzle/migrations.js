@@ -18,6 +18,9 @@ import m0013 from './0013_faulty_mephisto.sql';
 import m0014 from './0014_dusty_centennial.sql';
 import m0015 from './0015_bright_phil_sheldon.sql';
 import m0016 from './0016_conscious_chameleon.sql';
+import m0017 from './0017_wise_squadron_supreme.sql';
+import m0018 from './0018_chief_demogoblin.sql';
+import m0019 from './0019_brave_spitfire.sql';
 
   export default {
     journal,
@@ -38,7 +41,10 @@ m0012,
 m0013,
 m0014,
 m0015,
-m0016
+m0016,
+m0017,
+m0018,
+m0019
     }
   }
   

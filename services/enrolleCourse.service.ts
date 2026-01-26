@@ -29,7 +29,6 @@ export const enrolledCourses = async (courseId: string) => {
     // A API retorna um array, então pegamos o primeiro elemento
     const pratice = praticeData[0];
 
-    console.log('Dados do game recebidos:', pratice);
 
     // Buscar usuário
     const [user] = await db.select().from(users).limit(1);
@@ -90,7 +89,7 @@ export const enrolledCourses = async (courseId: string) => {
                             });
 
                             if (lesson.quizzes?.length) {
-                                console.log('Inserindo quizzes, tamanho:', lesson.quizzes.length);
+
 
                                 for (const q of lesson.quizzes) {
                                     await tx.insert(quiz).values({

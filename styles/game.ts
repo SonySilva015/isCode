@@ -79,7 +79,7 @@ export const stylesGame = (colors: any) => StyleSheet.create({
 
     // Cards de prática
     practiceCard: {
-        backgroundColor: 'rgba(255,255,255,0.95)',
+        backgroundColor: colors.card,
         borderRadius: 16,
         padding: 16,
         marginBottom: 20,
@@ -143,7 +143,7 @@ export const stylesGame = (colors: any) => StyleSheet.create({
     practiceTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#111827',
+        color: colors.title,
         marginRight: 8,
     },
     practiceTitleCompleted: {
@@ -175,7 +175,7 @@ export const stylesGame = (colors: any) => StyleSheet.create({
     // Descrição
     practiceDescription: {
         fontSize: 14,
-        color: '#6B7280',
+        color: colors.text,
         marginBottom: 12,
         lineHeight: 20,
     },

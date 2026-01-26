@@ -471,9 +471,9 @@ export default function GameScreen() {
 
         if (correctAnswers === cards.length) {
             setXpEarned(prev => prev < xpEarnedValue ? xpEarnedValue : prev);
+            await handleCompleteLesson(levelId, xpEarnedValue);
         }
 
-        await handleCompleteLesson(levelId, xpEarnedValue);
 
         if (accuracy >= 70) {
             setShowSuccessModal(true);
@@ -633,7 +633,7 @@ export default function GameScreen() {
                             {/* Header - Fixo no topo */}
                             <View style={[
                                 styles.header,
-                                { backgroundColor: mode === 'dark' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.05)' }
+                                { backgroundColor: mode === 'dark' ? 'rgba(0, 0, 0, 8)' : 'rgba(255, 255, 255, 8)' }
                             ]}>
                                 <View style={styles.headerLeft}>
                                     <TouchableOpacity
@@ -965,7 +965,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 20,
-        paddingTop: Platform.OS === 'ios' ? 20 : 40,
+        paddingTop: 20,
         paddingBottom: 16,
         borderBottomWidth: 1,
         zIndex: 10,
@@ -1061,7 +1061,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 2,
+        marginTop: 30,
     },
     flashcardWrapper: {
         width: SCREEN_WIDTH * 0.9,

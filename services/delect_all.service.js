@@ -1,5 +1,8 @@
 import { db } from '@/db';
-import { courses, game, gameLevel, lessons, modules, options, quiz, quizGame, users, xp_levels } from '@/db/schemas';
+import {
+    courses, game, gameLevel, lessons, modules, notify,
+    options, quiz, quizGame, users, xp_levels
+} from '@/db/schemas';
 
 
 
@@ -17,6 +20,8 @@ export async function deleteAllData() {
             await tx.delete(modules);
             await tx.delete(courses);
             await tx.delete(users);
+            await tx.delete(notify);
+
         });
 
         return { success: true, message: 'All data has been deleted.' };

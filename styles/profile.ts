@@ -1,22 +1,12 @@
 // styles/profile.ts
-import { Dimensions, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
-const { width } = Dimensions.get('window');
 
-export const styles = StyleSheet.create({
+export const stylesProfile = (colors: any) => StyleSheet.create({
 
-    // Adicione estes estilos aos seus estilos existentes
 
-    // Estilo para cartão clicável
     infoCardClickable: {
-        backgroundColor: '#f8fafc',
-        borderWidth: 1,
-        borderColor: '#e2e8f0',
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
+
     },
 
     infoCardContent: {
@@ -115,7 +105,7 @@ export const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: '#f8fafc',
+        backgroundColor: colors.background,
     },
 
     // Loading
@@ -123,7 +113,7 @@ export const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f8fafc',
+        backgroundColor: colors.background,
     },
     loadingText: {
         marginTop: 12,
@@ -218,7 +208,7 @@ export const styles = StyleSheet.create({
     // Tabs
     tabsContainer: {
         flexDirection: 'row',
-        backgroundColor: '#fff',
+        backgroundColor: colors.card,
         marginHorizontal: 20,
         borderRadius: 16,
         marginBottom: 24,
@@ -236,7 +226,7 @@ export const styles = StyleSheet.create({
         borderRadius: 12,
     },
     tabActive: {
-        backgroundColor: '#f1f5f9',
+        backgroundColor: 'rgba(102, 126, 234, 0.1)',
     },
     tabText: {
         fontSize: 12,
@@ -252,11 +242,12 @@ export const styles = StyleSheet.create({
     tabContent: {
         paddingHorizontal: 20,
         paddingBottom: 40,
+        backgroundColor: colors.background,
     },
     sectionTitle: {
         fontSize: 20,
         fontWeight: '700',
-        color: '#1e293b',
+        color: colors.title,
         marginBottom: 16,
     },
 
@@ -274,7 +265,7 @@ export const styles = StyleSheet.create({
     },
     infoLabel: {
         fontSize: 12,
-        color: '#64748b',
+        color: colors.text,
         marginTop: 8,
         marginBottom: 4,
         textAlign: 'center',
@@ -282,11 +273,11 @@ export const styles = StyleSheet.create({
     infoValue: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#1e293b',
+        color: colors.title,
         textAlign: 'center',
     },
     aboutCard: {
-        backgroundColor: '#fff',
+        backgroundColor: colors.card,
         borderRadius: 16,
         padding: 20,
         marginBottom: 24,
@@ -299,7 +290,7 @@ export const styles = StyleSheet.create({
     aboutText: {
         fontSize: 14,
         lineHeight: 22,
-        color: '#475569',
+        color: colors.text,
         textAlign: 'center',
     },
     xpProgress: {
@@ -307,7 +298,7 @@ export const styles = StyleSheet.create({
     },
     xpLabel: {
         fontSize: 14,
-        color: '#64748b',
+        color: colors.text,
         marginBottom: 8,
         textAlign: 'center',
     },
@@ -324,7 +315,7 @@ export const styles = StyleSheet.create({
     },
     xpText: {
         fontSize: 14,
-        color: '#475569',
+        color: colors.text,
         textAlign: 'center',
         fontWeight: '500',
     },
@@ -345,7 +336,7 @@ export const styles = StyleSheet.create({
         marginBottom: 24,
     },
     courseCard: {
-        backgroundColor: '#fff',
+        backgroundColor: colors.card,
         borderRadius: 16,
         padding: 16,
         marginBottom: 12,
@@ -376,12 +367,12 @@ export const styles = StyleSheet.create({
     courseTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#1e293b',
+        color: colors.title,
         marginBottom: 8,
     },
     courseDescription: {
         fontSize: 14,
-        color: '#64748b',
+        color: colors.text,
         marginBottom: 12,
         lineHeight: 20,
     },
@@ -392,7 +383,7 @@ export const styles = StyleSheet.create({
     },
     courseModulesText: {
         fontSize: 12,
-        color: '#64748b',
+        color: colors.text,
         marginLeft: 6,
     },
     courseProgressContainer: {
@@ -416,87 +407,6 @@ export const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '600',
         color: '#059669',
-    },
-
-    // Conquistas Tab
-    achievementsHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 16,
-    },
-    achievementsCount: {
-        fontSize: 14,
-        color: '#64748b',
-        fontWeight: '500',
-    },
-    achievementsGrid: {},
-    achievementCard: {
-        flexDirection: 'row',
-        backgroundColor: '#fff',
-        borderRadius: 16,
-        padding: 16,
-        marginBottom: 12,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 8,
-        elevation: 4,
-    },
-    achievementIconContainer: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 16,
-    },
-    achievementContent: {
-        flex: 1,
-    },
-    achievementTitle: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#1e293b',
-        marginBottom: 4,
-    },
-    achievementDescription: {
-        fontSize: 14,
-        color: '#64748b',
-        marginBottom: 8,
-        lineHeight: 20,
-    },
-    achievementProgress: {
-        marginBottom: 8,
-    },
-    achievementProgressText: {
-        fontSize: 12,
-        color: '#64748b',
-        marginBottom: 4,
-    },
-    achievementProgressBar: {
-        height: 4,
-        backgroundColor: '#f1f5f9',
-        borderRadius: 2,
-        overflow: 'hidden',
-    },
-    achievementProgressFill: {
-        height: '100%',
-        backgroundColor: '#667eea',
-        borderRadius: 2,
-    },
-    achievementStatus: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        alignSelf: 'flex-start',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 12,
-    },
-    achievementStatusText: {
-        fontSize: 11,
-        fontWeight: '600',
-        marginLeft: 4,
     },
 
     // Empty State

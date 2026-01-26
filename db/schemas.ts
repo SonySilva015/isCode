@@ -1,9 +1,9 @@
+import { sql } from 'drizzle-orm';
 import {
     integer,
     sqliteTable,
-    text
+    text,
 } from "drizzle-orm/sqlite-core";
-
 
 // ─────────────────────────────────────────────
 // USERS
@@ -115,3 +115,10 @@ export const quizGame = sqliteTable('quizgame', {
     game_fk: integer('game_fk').references(() => gameLevel.id)
 })
 
+export const notify = sqliteTable('notify', {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    title: text('title'),
+    content: text('content'),
+    checked: integer('checked', { mode: 'boolean' }).default(false),
+    date: text('date').default(sql`CURRENT_TIMESTAMP`),
+})
