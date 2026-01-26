@@ -567,7 +567,7 @@ export default function GameScreen() {
     };
 
     const handleBackToLevels = () => {
-        router.back();
+        router.push(`/game/levels/${1}`);
     };
 
     // =======================
